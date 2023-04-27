@@ -8,7 +8,9 @@ import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
 import utilities.RestAssuredExtension;
+
 import java.util.Objects;
+
 import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -97,6 +99,7 @@ public class VerificationSteps {
     public void setAnInvalidAPIKey() {
         restAssuredExtension.changeQueryParam("key", "AIzaSyDC3sqH2Gt7VNdFUn-4KNI_NpH4xpWrong");
     }
+
     @And("the response should contain an error message")
     public void theResponseShouldContainAnErrorMessage() {
         String expectedErrorMessage = "API key not valid. Please pass a valid API key.";
@@ -105,27 +108,6 @@ public class VerificationSteps {
                 .as("Response Error message does not match expected, should be " + expectedErrorMessage)
                 .isEqualTo(expectedErrorMessage);
     }
-
-    @And("the response should contain the specified number of items")
-    public void theResponseShouldContainTheSpecifiedNumberOfItems() {
-    }
-
-    @And("the channelId parameter is set to a specific channel ID")
-    public void theChannelIdParameterIsSetToASpecificChannelID() {
-    }
-
-    @And("the response should contain a list of channel activity events for the specified channel")
-    public void theResponseShouldContainAListOfChannelActivityEventsForTheSpecifiedChannel() {
-    }
-
-    @And("the mine parameter is set to true")
-    public void theMineParameterIsSetToTrue() {
-    }
-
-    @And("the response should contain a list of channel activity events for the authenticated user")
-    public void theResponseShouldContainAListOfChannelActivityEventsForTheAuthenticatedUser() {
-    }
-
 
 
 }

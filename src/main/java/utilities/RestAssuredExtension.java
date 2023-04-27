@@ -45,15 +45,6 @@ public class RestAssuredExtension {
         Request = given().spec(requestSpec);
     }
 
-    public void GetOpsWithPathParameter(String url, Map<String, String> pathParams) {
-        Request.pathParams(pathParams);
-        try {
-            Request.get(new URI(url));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
     public ResponseOptions<Response> sendGetRequest(String endpoint) {
         buildRequest();
         try {
@@ -70,40 +61,48 @@ public class RestAssuredExtension {
         builder.addQueryParam(queryParam, value);
     }
 
-    public ResponseOptions<Response> GetOpsWithToken(String url, String token) {
-        try {
-            Request.header(new Header("Authorization", "Bearer " + token));
-            return Request.get(new URI(url));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public ResponseOptions<Response> PUTOpsWithBodyAndPathParams(String url, Map<String,String> body, Map<String,String> pathParams) {
-        Request.pathParams(pathParams);
-        Request.body(body);
-        return Request.put(url);
-    }
-    public ResponseOptions<Response> PostOpsWithBodyAndPathParams(String url, Map<String, String> pathParams, Map<String, String> body)  {
-        Request.pathParams(pathParams);
-        Request.body(body);
-        return Request.post(url);
-    }
-    public ResponseOptions<Response> DeleteOpsWithPathParams(String url,Map<String, String> pathParams)  {
-        Request.pathParams(pathParams);
-        return Request.delete(url);
-    }
-    public ResponseOptions<Response> GetWithPathParams(String url,Map<String, String> pathParams)  {
-        Request.pathParams(pathParams);
-        return Request.get(url);
-    }
-
-    public ResponseOptions<Response> GetWithQueryParamsWithToken(String url,Map<String, String> pathParams, String token)  {
-        Request.header(new Header("Authorization", "Bearer " + token));
-        Request.queryParams(pathParams);
-        return Request.get(url);
-    }
+//    public void GetOpsWithPathParameter(String url, Map<String, String> pathParams) {
+//        Request.pathParams(pathParams);
+//        try {
+//            Request.get(new URI(url));
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//    public ResponseOptions<Response> GetOpsWithToken(String url, String token) {
+//        try {
+//            Request.header(new Header("Authorization", "Bearer " + token));
+//            return Request.get(new URI(url));
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+//    public ResponseOptions<Response> PUTOpsWithBodyAndPathParams(String url, Map<String,String> body, Map<String,String> pathParams) {
+//        Request.pathParams(pathParams);
+//        Request.body(body);
+//        return Request.put(url);
+//    }
+//    public ResponseOptions<Response> PostOpsWithBodyAndPathParams(String url, Map<String, String> pathParams, Map<String, String> body)  {
+//        Request.pathParams(pathParams);
+//        Request.body(body);
+//        return Request.post(url);
+//    }
+//    public ResponseOptions<Response> DeleteOpsWithPathParams(String url,Map<String, String> pathParams)  {
+//        Request.pathParams(pathParams);
+//        return Request.delete(url);
+//    }
+//    public ResponseOptions<Response> GetWithPathParams(String url,Map<String, String> pathParams)  {
+//        Request.pathParams(pathParams);
+//        return Request.get(url);
+//    }
+//
+//    public ResponseOptions<Response> GetWithQueryParamsWithToken(String url,Map<String, String> pathParams, String token)  {
+//        Request.header(new Header("Authorization", "Bearer " + token));
+//        Request.queryParams(pathParams);
+//        return Request.get(url);
+//    }
 
 //    public static ResponseOptions<Response> PostOpsWithBody(String url,Map<String, String> body)  {
 //        Request.body(body);

@@ -18,8 +18,10 @@ import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 
 public class VerificationSteps {
     private String endpoint;
-    public static ResponseOptions<Response> response;
-    public static ActivityListResponse activityListResponse;
+    public ResponseOptions<Response> response;
+    public ActivityListResponse activityListResponse;
+    public RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
+
 
     @Given("the API endpoint for activities")
     public void theAPIEndpointForActivities() {
@@ -28,12 +30,17 @@ public class VerificationSteps {
 
     @When("a GET request is sent to the endpoint")
     public void aGETRequestIsSentToTheEndpoint() {
-        response = RestAssuredExtension.sendGetRequest(endpoint);
+        response = restAssuredExtension.sendGetRequest(endpoint);
         //System.out.println(response.getBody().asString());
     }
 
     @Then("the response status code should be {int}")
     public void theResponseStatusCodeShouldBe(int expectedStatusCode) {
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         assertThat(response.statusCode())
                 .as("Response status code does not match expected, should be " + expectedStatusCode)
                 .isEqualTo(expectedStatusCode);
@@ -54,7 +61,7 @@ public class VerificationSteps {
 
     @And("the query param {string} with the value {string} is added")
     public void theQueryParamWithTheValueIsAdded(String queryParam, String value) {
-        RestAssuredExtension.addQueryParam(queryParam, value);
+        restAssuredExtension.addQueryParam(queryParam, value);
     }
 
     @And("the response should include the required property snippet")
@@ -91,7 +98,7 @@ public class VerificationSteps {
 
     @And("set an invalid API key")
     public void setAnInvalidAPIKey() {
-        RestAssuredExtension.changeQueryParam("key", "AIzaSyDC3sqH2Gt7VNdFUn-4KNI_NpH4xpWrong");
+        restAssuredExtension.changeQueryParam("key", "AIzaSyDC3sqH2Gt7VNdFUn-4KNI_NpH4xpWrong");
     }
     @And("the response should contain an error message")
     public void theResponseShouldContainAnErrorMessage() {

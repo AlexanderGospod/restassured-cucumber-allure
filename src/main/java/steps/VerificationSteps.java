@@ -8,13 +8,10 @@ import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
 import utilities.RestAssuredExtension;
-
 import java.util.Objects;
-
+import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 
 public class VerificationSteps {
     private String endpoint;

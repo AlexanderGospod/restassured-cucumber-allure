@@ -1,5 +1,32 @@
-# Rest-assured
-Includes complete source code of rest-assured java discussed in the youtube and udemy courses
+# cucumber7-restAssured-junit5-Allure-parallelExecution
+Project with the ability to run in parallel execution with the desired number of threads.
+Set in junit-platform.properties
 
-## Course details
-The complete rest-assured course is available in ExecuteAutomation YouTube channel here https://www.youtube.com/playlist?list=PL6tu16kXT9PpgqfMbMdzUzDenYgb0gbk0
+To run tests locally:
+
+- Launch RunCucumberTest class
+- With mvn command:
+```
+mvn install
+```
+
+## Configuration
+The cucumber settings are located:
+```
+src/test/resources/junit-platform.properties
+```
+
+## Peculiarities
+The project is testing the api of YouTube, api documentation can be found here
+```
+https://developers.google.com/youtube/v3/docs/
+```
+
+### Building report locally
+To start the allure server and view the report:
+```
+mvn allure:serve
+```
+
+
+

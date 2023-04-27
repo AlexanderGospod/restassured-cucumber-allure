@@ -2,7 +2,6 @@ package utilities;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Properties;
 
 import static endpoint.APIEndpoints.BASE_URI;
@@ -31,7 +29,7 @@ public class RestAssuredExtension {
         builder.addQueryParam("channelId", channelId);
     }
     private void readPropertyData(){
-        try (InputStream input = getClass().getResourceAsStream("/youtube_api.properties")) {
+        try (InputStream input = getClass().getResourceAsStream("/youtube-api.properties")) {
             Properties props = new Properties();
             props.load(input);
             apiKey = props.getProperty("youtubeApiKey");

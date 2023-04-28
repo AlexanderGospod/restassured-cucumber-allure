@@ -55,8 +55,11 @@ public class RestAssuredExtension {
         builder.addQueryParam(queryParam, value);
     }
     public void changeQueryParam(String queryParam, String value) {
-        builder.removeQueryParam(queryParam);
+        deleteQueryParam(queryParam);
         builder.addQueryParam(queryParam, value);
+    }
+    public void deleteQueryParam(String queryParam){
+        builder.removeQueryParam(queryParam);
     }
 
 //    public void GetOpsWithPathParameter(String url, Map<String, String> pathParams) {

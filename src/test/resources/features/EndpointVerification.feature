@@ -44,4 +44,11 @@ Feature: Activities API Endpoint Verification
     And set an invalid API key
     When a GET request is sent to the endpoint
     Then the response status code should be 400
-    And the response should contain an error message
+    And the response should contain an error message that API key not valid
+
+  Scenario: Retrieving activities without channelId
+    Given the API endpoint for activities
+    And remove the default Channel ID
+    When a GET request is sent to the endpoint
+    Then the response status code should be 400
+    And the response should contain an error message that No filter selected

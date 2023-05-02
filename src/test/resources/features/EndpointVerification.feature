@@ -1,17 +1,22 @@
-Feature: Activities API Endpoint Verification
+Feature: Feature: Retrieve YouTube Activities
+  As a developer I want to retrieve YouTube chanel activities
 
   @smoke
   Scenario: Retrieving activities with default parameters
     Given the API endpoint for activities
-    When a GET request is sent to the endpoint
+    And the query param for apiKey
+    And the query param for channelId
+    When I send a GET request to the endpoint
     Then the response status code should be 200
     And the response should contain a list of channel activity events
     And the response should contain the default number of items (5)
 
   Scenario: Retrieving activities with snippet parameter
     Given the API endpoint for activities
-    And the query param "part" with the value "snippet" is added
-    When a GET request is sent to the endpoint
+    And the query param for apiKey
+    And the query param for channelId
+    And the query param "part" with the value "snippet"
+    When I send a GET request to the endpoint
     Then the response status code should be 200
     And the response should contain a list of channel activity events
     And the response should contain the default number of items (5)
@@ -20,8 +25,10 @@ Feature: Activities API Endpoint Verification
 
   Scenario: Retrieving activities with contentDetails parameter
     Given the API endpoint for activities
-    And the query param "part" with the value "contentDetails" is added
-    When a GET request is sent to the endpoint
+    And the query param for apiKey
+    And the query param for channelId
+    And the query param "part" with the value "contentDetails"
+    When I send a GET request to the endpoint
     Then the response status code should be 200
     And the response should contain a list of channel activity events
     And the response should contain the default number of items (5)
@@ -30,9 +37,11 @@ Feature: Activities API Endpoint Verification
 
   Scenario: Retrieving activities with multiple parameters
     Given the API endpoint for activities
-    And the query param "part" with the value "contentDetails" is added
-    And the query param "part" with the value "snippet" is added
-    When a GET request is sent to the endpoint
+    And the query param for apiKey
+    And the query param for channelId
+    And the query param "part" with the value "contentDetails"
+    And the query param "part" with the value "snippet"
+    When I send a GET request to the endpoint
     Then the response status code should be 200
     And the response should contain a list of channel activity events
     And the response should contain the default number of items (5)
@@ -41,14 +50,24 @@ Feature: Activities API Endpoint Verification
 
   Scenario: Retrieving activities with invalid API key
     Given the API endpoint for activities
-    And set an invalid API key
-    When a GET request is sent to the endpoint
+    And the query param "key" with the value "WrongApiKeyAIzaSyDC37VNdFUn-4KNI_NpH4xp"
+    And the query param for channelId
+    When I send a GET request to the endpoint
     Then the response status code should be 400
     And the response should contain an error message that API key not valid
 
   Scenario: Retrieving activities without channelId
     Given the API endpoint for activities
-    And remove the default Channel ID
-    When a GET request is sent to the endpoint
+    And the query param for apiKey
+    When I send a GET request to the endpoint
     Then the response status code should be 400
     And the response should contain an error message that No filter selected
+
+  Scenario: Retrieve OAuth 2.0 Authorized user's activities with mine param
+    Given the API endpoint for activities
+    And the query param "mine" with the value "true"
+    And I have a valid OAuth 2.0 access token
+    When I send a GET request to the endpoint
+    Then the response status code should be 200
+    And the response should contain a list of channel activity events
+    And the response should contain the default number of items (5)

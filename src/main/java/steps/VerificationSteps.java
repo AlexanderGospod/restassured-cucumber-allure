@@ -1,12 +1,15 @@
 package steps;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.qameta.allure.Allure;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
+import utilities.AccessTokenProvider;
 import utilities.RestAssuredExtension;
 
 import java.util.Objects;
@@ -21,25 +24,33 @@ public class VerificationSteps {
     public ActivityListResponse activityListResponse;
     public RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
 
-
     @Given("the API endpoint for activities")
     public void setEndpointToActivities() {
         endpoint = ACTIVITIES_ENDPOINT;
     }
+    @And("the query param for apiKey")
+    public void theQueryParamForApiKey() {
+        restAssuredExtension.addApiKeyParam();
+    }
 
-    @When("a GET request is sent to the endpoint")
+    @And("the query param for channelId")
+    public void theQueryParamForChannelId() {
+        restAssuredExtension.addChannelIdParam();
+    }
+
+    @When("I send a GET request to the endpoint")
     public void sendGETRequestToEndpoint() {
         response = restAssuredExtension.sendGetRequest(endpoint);
-        //System.out.println(response.getBody().asString());
+    }
+    @After
+    public void attachErrorMessage() {
+        if (response.getStatusCode() >= 400) {
+            Allure.addAttachment("Error message", response.getBody().asString());
+        }
     }
 
     @Then("the response status code should be {int}")
     public void assertResponseStatusCode(int expectedStatusCode) {
-//        try {
-//            Thread.sleep(5000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
         assertThat(response.statusCode())
                 .as("Response status code does not match expected, should be " + expectedStatusCode)
                 .isEqualTo(expectedStatusCode);
@@ -58,7 +69,7 @@ public class VerificationSteps {
         assertThat(activityListResponse.getItems().size()).isEqualTo(defaultNumberOfItems);
     }
 
-    @And("the query param {string} with the value {string} is added")
+    @And("the query param {string} with the value {string}")
     public void addQueryParam(String queryParam, String value) {
         restAssuredExtension.addQueryParam(queryParam, value);
     }
@@ -95,11 +106,6 @@ public class VerificationSteps {
         assertThat(allSnippetIsEmpty).isTrue();
     }
 
-    @And("set an invalid API key")
-    public void setAnInvalidAPIKey() {
-        restAssuredExtension.changeQueryParam("key", "AIzaSyDC3sqH2Gt7VNdFUn-4KNI_NpH4xpWrong");
-    }
-
     @And("the response should contain an error message that API key not valid")
     public void assertErrorMessageForInvalidApiKey() {
         String expectedErrorMessage = "API key not valid. Please pass a valid API key.";
@@ -112,7 +118,7 @@ public class VerificationSteps {
         assertErrorMessage(expectedErrorMessage);
     }
 
-    private void assertErrorMessage(String expectedErrorMessage){
+    private void assertErrorMessage(String expectedErrorMessage) {
         String errorMessage = response.getBody().jsonPath().getString("error.message");
         System.out.println(errorMessage);
         assertThat(errorMessage)
@@ -120,8 +126,10 @@ public class VerificationSteps {
                 .contains(expectedErrorMessage);
     }
 
-    @And("remove the default Channel ID")
-    public void removeTheDefaultChannelID() {
-        restAssuredExtension.deleteQueryParam("channelId");
+    @And("I have a valid OAuth 2.0 access token")
+    public void iHaveAValidOAuthAccessToken() {
+        AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
+        String token = accessTokenProvider.getAccessToken();
+        restAssuredExtension.addToken(token);
     }
 }

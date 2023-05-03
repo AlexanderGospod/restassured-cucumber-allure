@@ -18,7 +18,7 @@ import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class VerificationSteps {
+public class ActivitiesSteps {
     private String endpoint;
     public ResponseOptions<Response> response;
     public ActivityListResponse activityListResponse;

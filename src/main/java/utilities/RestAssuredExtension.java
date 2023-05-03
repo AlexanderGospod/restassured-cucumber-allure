@@ -7,55 +7,37 @@ import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Properties;
 import static endpoint.APIEndpoints.BASE_URI;
 import static io.restassured.RestAssured.given;
 
 public class RestAssuredExtension {
     private RequestSpecification request;
-    private String apiKey;
-    private String channelId;
     private RequestSpecBuilder builder = new RequestSpecBuilder();
 
-    public RestAssuredExtension() {
-        readPropertyData();
-        builder.setBaseUri(BASE_URI);
-        builder.setContentType(ContentType.JSON);
-    }
-
-    private void readPropertyData() {
-        try (InputStream input = getClass().getResourceAsStream("/youtube-api.properties")) {
-            Properties props = new Properties();
+    public Properties readPropertyData() {
+        Properties props = new Properties();
+        try (InputStream input = getClass().getResourceAsStream("/system.properties")) {
             props.load(input);
-            apiKey = props.getProperty("youtubeApiKey");
-            channelId = props.getProperty("youtubeChannelId");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return props;
     }
 
     private void buildRequest() {
         RequestSpecification requestSpec = builder.build();
         request = given().spec(requestSpec);
     }
+    public void setEndpoint(String endpoint){
+        builder.setBaseUri(BASE_URI);
+        builder.setBasePath(endpoint);
+        builder.setContentType(ContentType.JSON);
+    }
 
-    public ResponseOptions<Response> sendGetRequest(String endpoint) {
+    public ResponseOptions<Response> sendGetRequest() {
         buildRequest();
-        try {
-            return request.get(new URI(endpoint));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void addApiKeyParam() {
-        builder.addQueryParam("key", apiKey);
-    }
-
-    public void addChannelIdParam() {
-        builder.addQueryParam("channelId", channelId);
+        return request.get();
     }
 
     public void addQueryParam(String queryParam, String value) {

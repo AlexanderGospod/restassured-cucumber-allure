@@ -1,5 +1,6 @@
 package steps;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -11,40 +12,42 @@ import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
 import utilities.AccessTokenProvider;
 import utilities.RestAssuredExtension;
-
-import java.util.Objects;
+import java.util.*;
 
 import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ActivitiesSteps {
-    private String endpoint;
     public ResponseOptions<Response> response;
     public ActivityListResponse activityListResponse;
     public RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
-
-    @Given("the API endpoint for activities")
-    public void setEndpointToActivities() {
-        endpoint = ACTIVITIES_ENDPOINT;
-    }
-    @And("the query param for apiKey")
-    public void theQueryParamForApiKey() {
-        restAssuredExtension.addApiKeyParam();
-    }
-
-    @And("the query param for channelId")
-    public void theQueryParamForChannelId() {
-        restAssuredExtension.addChannelIdParam();
+    @Given("the API endpoint with the following query parameters:")
+    public void setEndpointWithQueryParameters(DataTable queryParams) {
+        restAssuredExtension.setEndpoint(ACTIVITIES_ENDPOINT);
+        List<Map<String, String>> rows = queryParams.asMaps(String.class, String.class);
+        Properties props = restAssuredExtension.readPropertyData();
+        rows.forEach(row -> {
+            switch(row.get("name")) {
+                case "key":
+                case "channelId":
+                    String value = props.getProperty(row.get("value"));
+                    restAssuredExtension.addQueryParam(row.get("name"), value);
+                    break;
+                default:
+                    restAssuredExtension.addQueryParam(row.get("name"), row.get("value"));
+                    break;
+            }
+        });
     }
 
     @When("I send a GET request to the endpoint")
     public void sendGETRequestToEndpoint() {
-        response = restAssuredExtension.sendGetRequest(endpoint);
+        response = restAssuredExtension.sendGetRequest();
     }
     @After
     public void attachErrorMessage() {
-        if (response.getStatusCode() >= 400) {
+        if (response != null && response.getStatusCode() >= 400) {
             Allure.addAttachment("Error message", response.getBody().asString());
         }
     }

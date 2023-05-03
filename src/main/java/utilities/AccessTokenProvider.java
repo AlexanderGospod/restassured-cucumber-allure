@@ -22,7 +22,7 @@ public class AccessTokenProvider {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String CLIENT_SECRETS_FILE = "/client_secret_CLIENTID.json";
-    private static final Iterable<String> SCOPES = Collections.singletonList(YouTubeScopes.YOUTUBE_READONLY);
+    private static final Iterable<String> SCOPES = Collections.singletonList(YouTubeScopes.YOUTUBE_FORCE_SSL);
 
     public static Credential authorize() throws IOException, GeneralSecurityException {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -48,11 +48,4 @@ public class AccessTokenProvider {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
-
-
-
 }

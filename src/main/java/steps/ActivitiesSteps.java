@@ -12,39 +12,28 @@ import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
 import utilities.AccessTokenProvider;
 import utilities.RestAssuredExtension;
-import java.util.*;
 
-import static endpoint.APIEndpoints.ACTIVITIES_ENDPOINT;
+import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class ActivitiesSteps {
-    public ResponseOptions<Response> response;
-    public ActivityListResponse activityListResponse;
-    public RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
-    @Given("the API endpoint with the following query parameters:")
-    public void setEndpointWithQueryParameters(DataTable queryParams) {
-        restAssuredExtension.setEndpoint(ACTIVITIES_ENDPOINT);
-        List<Map<String, String>> rows = queryParams.asMaps(String.class, String.class);
-        Properties props = restAssuredExtension.readPropertyData();
-        rows.forEach(row -> {
-            switch(row.get("name")) {
-                case "key":
-                case "channelId":
-                    String value = props.getProperty(row.get("value"));
-                    restAssuredExtension.addQueryParam(row.get("name"), value);
-                    break;
-                default:
-                    restAssuredExtension.addQueryParam(row.get("name"), row.get("value"));
-                    break;
-            }
-        });
+public class ActivitiesSteps extends BaseSteps{
+    private ResponseOptions<Response> response;
+    private ActivityListResponse activityListResponse;
+    private RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
+//    private BaseSteps baseSteps = new BaseSteps();
+
+    @Given("the API endpoint {string} with the following query parameters:")
+    public void setEndpointWithQueryParameters(String endpointName, DataTable queryParams) {
+        setEndpointWithQueryParameters(restAssuredExtension, endpointName, queryParams);
     }
 
     @When("I send a GET request to the endpoint")
     public void sendGETRequestToEndpoint() {
         response = restAssuredExtension.sendGetRequest();
+        System.out.println(response.getBody().asString());
     }
+
     @After
     public void attachErrorMessage() {
         if (response != null && response.getStatusCode() >= 400) {
@@ -129,10 +118,11 @@ public class ActivitiesSteps {
                 .contains(expectedErrorMessage);
     }
 
-    @And("I have a valid OAuth 2.0 access token")
-    public void iHaveAValidOAuthAccessToken() {
+    @And("a valid OAuth 2.0 access token with {string} scope")
+    public void iHaveAValidOAuthAccessToken(String scope) {
         AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
-        String token = accessTokenProvider.getAccessToken();
+        String token = accessTokenProvider.getAccessToken(scope);
         restAssuredExtension.addToken(token);
+        System.out.println(token);
     }
 }

@@ -8,7 +8,8 @@ import io.restassured.specification.RequestSpecification;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import static endpoint.APIEndpoints.BASE_URI;
+
+import static endpoint.APIEndpoints.*;
 import static io.restassured.RestAssured.given;
 
 public class RestAssuredExtension {
@@ -29,12 +30,20 @@ public class RestAssuredExtension {
         RequestSpecification requestSpec = builder.build();
         request = given().spec(requestSpec);
     }
-    public void setEndpoint(String endpoint){
+    public void setEndpoint(String endpointName) {
         builder.setBaseUri(BASE_URI);
-        builder.setBasePath(endpoint);
         builder.setContentType(ContentType.JSON);
+        switch (endpointName) {
+            case "activities":
+                builder.setBasePath(ACTIVITIES_ENDPOINT);
+                break;
+            case "commentThreads":
+                builder.setBasePath(COMMENT_THREADS);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid endpoint name: " + endpointName);
+        }
     }
-
     public ResponseOptions<Response> sendGetRequest() {
         buildRequest();
         return request.get();

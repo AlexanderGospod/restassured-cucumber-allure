@@ -20,11 +20,11 @@ import java.util.Collections;
 
 public class AccessTokenProvider {
 
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String CLIENT_SECRETS_FILE = "/client_secret_CLIENTID.json";
-    private static final Iterable<String> SCOPES = Collections.singletonList(YouTubeScopes.YOUTUBE_FORCE_SSL);
+    private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private final String CLIENT_SECRETS_FILE = "/client_secret_CLIENTID.json";
 
-    public static Credential authorize() throws IOException, GeneralSecurityException {
+    public Credential authorize(String scope) throws IOException, GeneralSecurityException {
+        Iterable<String> SCOPES = getScope(scope); //
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
@@ -39,13 +39,31 @@ public class AccessTokenProvider {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public String getAccessToken()  {
+    public String getAccessToken(String scope)  {
         try {
-            return authorize().getAccessToken();
+            return authorize(scope).getAccessToken();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
+        }
+    }
+    private Iterable<String> getScope(String scope){
+        switch(scope) {
+            case "YOUTUBE":
+                return Collections.singletonList(YouTubeScopes.YOUTUBE);
+            case "YOUTUBE_FORCE_SSL":
+                return Collections.singletonList(YouTubeScopes.YOUTUBE_FORCE_SSL);
+            case "YOUTUBE_READONLY":
+                return Collections.singletonList(YouTubeScopes.YOUTUBE_READONLY);
+            case "YOUTUBE_UPLOAD":
+                return Collections.singletonList(YouTubeScopes.YOUTUBE_UPLOAD);
+            case "YOUTUBEPARTNER":
+                return Collections.singletonList(YouTubeScopes.YOUTUBEPARTNER);
+            case "YOUTUBEPARTNER_CHANNEL_AUDIT":
+                return Collections.singletonList(YouTubeScopes.YOUTUBEPARTNER_CHANNEL_AUDIT);
+            default:
+                throw new IllegalArgumentException("Invalid YouTubeScope: " + scope);
         }
     }
 }

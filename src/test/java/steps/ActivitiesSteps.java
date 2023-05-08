@@ -13,15 +13,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ActivitiesSteps {
 
     private ActivityListResponse activityListResponse;
-    ResponseOptions<Response> response;
+    private final ResponseOptions<Response> response;
 
     public ActivitiesSteps() {
         response = CommonSteps.getResponse();
     }
 
-    @Then("the response status code should be {int}")
+    @Then("the response status code from activity should be {int}")
     public void assertResponseStatusCode(int expectedStatusCode) {
-        System.out.println(response.getStatusCode());
         assertThat(response.statusCode())
                 .as("Response status code does not match expected, should be " + expectedStatusCode)
                 .isEqualTo(expectedStatusCode);

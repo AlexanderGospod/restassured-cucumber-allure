@@ -10,14 +10,15 @@ import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import utilities.AccessTokenProvider;
 import utilities.RestAssuredExtension;
+import utilities.TokenStorage;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 public class CommonSteps {
-    private RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
-    private static ThreadLocal<ResponseOptions<Response>> threadLocalResponse = new ThreadLocal<>();
+    private final RestAssuredExtension restAssuredExtension = new RestAssuredExtension();
+    private final static ThreadLocal<ResponseOptions<Response>> threadLocalResponse = new ThreadLocal<>();
 
     public static ResponseOptions<Response> getResponse() {
         return threadLocalResponse.get();
@@ -46,8 +47,8 @@ public class CommonSteps {
 
     @When("I send a GET request to the endpoint")
     public void sendGETRequestToEndpoint() {
-        // restAssuredExtension.sendGetRequest() - returns response,
-        // but to get it from another class when running tests in parallel, I put it in a static "threadLocalResponse"
+        /* restAssuredExtension.sendGetRequest() - returns response, but to get it from another class
+           when running tests in parallel, I put it in a static "threadLocalResponse" */
         threadLocalResponse.set(restAssuredExtension.sendGetRequest());
     }
 
@@ -59,10 +60,15 @@ public class CommonSteps {
     }
 
     @And("a valid OAuth 2.0 access token with {string} scope")
-    public void iHaveAValidOAuthAccessToken(String scope) {
-        AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
-        String token = accessTokenProvider.getAccessToken(scope);
-        restAssuredExtension.addToken(token);
-        System.out.println(token);
+    public void setTokenWithNecessaryAccessRights(String scope) {
+        getTokenWithNecessaryAccessRights(scope);
+        restAssuredExtension.addToken(TokenStorage.getToken(scope));
+    }
+    public void getTokenWithNecessaryAccessRights(String scope){
+        if (TokenStorage.getToken(scope) == null){
+            AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
+            String token = accessTokenProvider.getAccessToken(scope);
+            TokenStorage.setToken(scope, token);
+        }
     }
 }

@@ -21,10 +21,10 @@ import java.util.Collections;
 public class AccessTokenProvider {
 
     private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private final String CLIENT_SECRETS_FILE = "/client_secret_CLIENTID.json";
 
-    public Credential authorize(String scope) throws IOException, GeneralSecurityException {
-        Iterable<String> SCOPES = getScope(scope); //
+    private Credential authorize(String scope) throws IOException, GeneralSecurityException {
+        String CLIENT_SECRETS_FILE = "/client_secret_CLIENTID.json";
+        Iterable<String> SCOPES = getScope(scope);
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
@@ -39,7 +39,7 @@ public class AccessTokenProvider {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public String getAccessToken(String scope)  {
+    public String getAccessToken(String scope) {
         try {
             return authorize(scope).getAccessToken();
         } catch (IOException e) {
@@ -48,8 +48,9 @@ public class AccessTokenProvider {
             throw new RuntimeException(e);
         }
     }
-    private Iterable<String> getScope(String scope){
-        switch(scope) {
+
+    private Iterable<String> getScope(String scope) {
+        switch (scope) {
             case "YOUTUBE":
                 return Collections.singletonList(YouTubeScopes.YOUTUBE);
             case "YOUTUBE_FORCE_SSL":

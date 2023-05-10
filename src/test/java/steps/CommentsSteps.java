@@ -3,13 +3,17 @@ package steps;
 import io.cucumber.java.en.And;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
-import model.CommentThreadRequest;
-import model.CommentThreadRequest.*;
+import model.comment.comment.CommentThreadRequest;
+import model.comment.comment.CommentThreadRequest.*;
+import model.comment.comment.CommentUpdateRequest;
 import pojo.comment.CommentThread;
 import pojo.comment.CommentThreadList;
+import pojo.comment.CommentUpdate;
 import utilities.RestAssuredExtension;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommentsSteps {
@@ -18,7 +22,8 @@ public class CommentsSteps {
 
     private CommentThreadList commentThreadList;
     private CommentThread commentThread;
-
+    private String comment;
+    private String commentForUpdate;
 
     public CommentsSteps() {
         restAssuredExtension = CommonSteps.getRestAssuredExtension();
@@ -32,6 +37,7 @@ public class CommentsSteps {
     @And("the response should include the required data about list of comments")
     public void verifyRequiredCommentListData() {
         response = CommonSteps.getResponse();
+        System.out.println(response.getBody().asString());
         // Deserialize the response to the commentThreadList POJO class, in the pojo class there is a check of all fields not null
         commentThreadList = response.getBody().as(CommentThreadList.class);
     }
@@ -47,7 +53,8 @@ public class CommentsSteps {
     public void setRequestBodyWithComment(String comment) {
         String channelId = CommonSteps.getProps().getProperty("channelId");
         String videoId = CommonSteps.getProps().getProperty("videoId");
-        CommentSnippet commentSnippet = new CommentSnippet(comment + ": " + getCurrentTime());
+        this.comment = comment + ": " + getCurrentTime();
+        CommentSnippet commentSnippet = new CommentSnippet(this.comment);
         TopLevelComment topLevelComment = new TopLevelComment(commentSnippet);
         Snippet snippet = new Snippet(channelId, videoId, topLevelComment);
         CommentThreadRequest commentThreadRequest = new CommentThreadRequest(snippet);
@@ -58,5 +65,25 @@ public class CommentsSteps {
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         return currentTime.format(formatter);
+    }
+
+    @And("I have a body for updating comment")
+    public void setUpdateCommentBody() {
+        // Create a new CommentUpdateRequest object
+        CommentUpdateRequest commentUpdateRequest = new CommentUpdateRequest();
+        // Set the values for the properties
+        commentUpdateRequest.setId(commentThread.getId());
+        CommentUpdateRequest.Snippet snippet = new CommentUpdateRequest.Snippet();
+        commentForUpdate = comment + " changed at " + getCurrentTime();
+        snippet.setTextOriginal(commentForUpdate);
+        commentUpdateRequest.setSnippet(snippet);
+        restAssuredExtension.setBody(commentUpdateRequest);
+    }
+
+    @And("the modified comment message is displayed")
+    public void verifyModifiedCommentMessage() {
+        response = CommonSteps.getResponse();
+        String displayedComment = response.getBody().as(CommentUpdate.class).getSnippet().getTextDisplay();
+        assertThat(displayedComment).isEqualTo(commentForUpdate);
     }
 }

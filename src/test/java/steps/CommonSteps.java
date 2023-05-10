@@ -56,7 +56,7 @@ public class CommonSteps {
         });
     }
 
-    @Given("the {string} API endpoint")
+    @Given("the API endpoint {string}")
     public void setEndpoint(String endpointName) {
         restAssuredExtension.get().setEndpoint(endpointName);
     }
@@ -71,6 +71,10 @@ public class CommonSteps {
     @When("I send a POST request to endpoint")
     public void sendPOSTRequestToEndpoint() {
         response.set(restAssuredExtension.get().sendPostRequest());
+    }
+    @When("I send a PUT request to endpoint")
+    public void sendPUTRequestToEndpoint() {
+        response.set(restAssuredExtension.get().sendPutRequest());
     }
 
     @After

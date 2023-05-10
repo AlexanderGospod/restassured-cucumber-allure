@@ -42,6 +42,9 @@ public class RestAssuredExtension {
             case "commentThreads":
                 builder.setBasePath(COMMENT_THREADS);
                 break;
+            case "comments":
+                builder.setBasePath(COMMENTS);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid endpoint name: " + endpointName);
         }
@@ -59,6 +62,10 @@ public class RestAssuredExtension {
         buildRequest();
         return request.post();
     }
+    public ResponseOptions<Response> sendPutRequest() {
+        buildRequest();
+        return request.put();
+    }
 
     public void addQueryParam(String queryParam, String value) {
         builder.addQueryParam(queryParam, value);
@@ -66,9 +73,5 @@ public class RestAssuredExtension {
 
     public void addToken(String token) {
         builder.addHeader("Authorization", "Bearer " + token);
-    }
-
-    public void deleteQueryParam(String queryParam) {
-        builder.removeQueryParam(queryParam);
     }
 }

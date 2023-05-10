@@ -1,5 +1,6 @@
 package pojo.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,9 @@ public class CommentThreadList {
     @NotNull
     @JsonProperty("etag")
     private String etag;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonProperty("nextPageToken")
+    private String nextPageToken;
     @NotNull
     @JsonProperty("pageInfo")
     private PageInfo pageInfo;

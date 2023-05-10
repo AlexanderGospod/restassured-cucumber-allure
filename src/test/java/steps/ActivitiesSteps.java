@@ -1,7 +1,6 @@
 package steps;
 
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
@@ -17,16 +16,6 @@ public class ActivitiesSteps {
 
     public ActivitiesSteps() {
         response = CommonSteps.getResponse();
-    }
-
-    @Then("the response status code from activity should be {int}")
-    public void assertResponseStatusCode(int expectedStatusCode) {
-        assertThat(response.statusCode())
-                .as("Response status code does not match expected, should be " + expectedStatusCode)
-                .isEqualTo(expectedStatusCode);
-        if (expectedStatusCode == 200)
-            // Deserialize the response to the ActivityListResponse POJO class
-            activityListResponse = response.getBody().as(ActivityListResponse.class);
     }
 
     @And("the response should contain a list of channel activity events")
@@ -91,4 +80,9 @@ public class ActivitiesSteps {
                 .contains(expectedErrorMessage);
     }
 
+    @And("the response should include the basic data of channel activity events")
+    public void verifyBasicChannelActivityEventData() {
+        // Deserialize the response to the ActivityListResponse POJO class, in the pojo class there is a check of all fields not null
+        activityListResponse = response.getBody().as(ActivityListResponse.class);
+    }
 }

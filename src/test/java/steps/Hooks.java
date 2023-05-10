@@ -7,6 +7,6 @@ public class Hooks {
     public static void getTokens() {
         CommonSteps commonSteps = new CommonSteps();
         commonSteps.getTokenWithNecessaryAccessRights("YOUTUBE_FORCE_SSL");
-        commonSteps.getTokenWithNecessaryAccessRights("YOUTUBE_READONLY");
+        //commonSteps.getTokenWithNecessaryAccessRights("YOUTUBE_READONLY");
     }
 }

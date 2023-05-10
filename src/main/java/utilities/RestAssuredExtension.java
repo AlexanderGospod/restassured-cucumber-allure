@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -14,7 +15,7 @@ import static io.restassured.RestAssured.given;
 
 public class RestAssuredExtension {
     private RequestSpecification request;
-    private RequestSpecBuilder builder = new RequestSpecBuilder();
+    private final RequestSpecBuilder builder = new RequestSpecBuilder();
 
     public Properties readPropertyData() {
         Properties props = new Properties();
@@ -30,6 +31,7 @@ public class RestAssuredExtension {
         RequestSpecification requestSpec = builder.build();
         request = given().spec(requestSpec);
     }
+
     public void setEndpoint(String endpointName) {
         builder.setBaseUri(BASE_URI);
         builder.setContentType(ContentType.JSON);
@@ -44,9 +46,18 @@ public class RestAssuredExtension {
                 throw new IllegalArgumentException("Invalid endpoint name: " + endpointName);
         }
     }
+
+    public void setBody(Object object) {
+        builder.setBody(object);
+    }
+
     public ResponseOptions<Response> sendGetRequest() {
         buildRequest();
         return request.get();
+    }
+    public ResponseOptions<Response> sendPostRequest() {
+        buildRequest();
+        return request.post();
     }
 
     public void addQueryParam(String queryParam, String value) {
@@ -55,11 +66,6 @@ public class RestAssuredExtension {
 
     public void addToken(String token) {
         builder.addHeader("Authorization", "Bearer " + token);
-    }
-
-    public void changeQueryParam(String queryParam, String value) {
-        deleteQueryParam(queryParam);
-        builder.addQueryParam(queryParam, value);
     }
 
     public void deleteQueryParam(String queryParam) {

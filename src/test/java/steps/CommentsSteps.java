@@ -1,40 +1,62 @@
 package steps;
 
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
-import pojo.comment.CommentThreadListResponse;
+import model.CommentThreadRequest;
+import model.CommentThreadRequest.*;
+import pojo.comment.CommentThread;
+import pojo.comment.CommentThreadList;
+import utilities.RestAssuredExtension;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommentsSteps {
-    private final ResponseOptions<Response> response;
-    private CommentThreadListResponse commentThreadListResponse;
+    private ResponseOptions<Response> response;
+    private final RestAssuredExtension restAssuredExtension;
+
+    private CommentThreadList commentThreadList;
+    private CommentThread commentThread;
+
 
     public CommentsSteps() {
-        response = CommonSteps.getResponse();
+        restAssuredExtension = CommonSteps.getRestAssuredExtension();
     }
 
-    @Then("the response status code from commentThreads should be {int}")
-    public void assertResponseStatusCode(int expectedStatusCode) {
-        assertThat(response.statusCode())
-                .as("Response status code does not match expected, should be " + expectedStatusCode)
-                .isEqualTo(expectedStatusCode);
-        if (expectedStatusCode == 200)
-            // Deserialize the response to the ActivityListResponse POJO class
-            commentThreadListResponse = response.getBody().as(CommentThreadListResponse.class);
-    }
     @And("the response should contain a list of comments")
     public void assertThatListOfCommentsIsPresentInResponse() {
-        assertThat(commentThreadListResponse.getItems().size()).isGreaterThan(1);
+        assertThat(commentThreadList.getItems().size()).isGreaterThan(1);
+    }
+
+    @And("the response should include the required data about list of comments")
+    public void verifyRequiredCommentListData() {
+        response = CommonSteps.getResponse();
+        // Deserialize the response to the commentThreadList POJO class, in the pojo class there is a check of all fields not null
+        commentThreadList = response.getBody().as(CommentThreadList.class);
     }
 
     @And("the response should include the required comment data")
-    public void assertThatRequiredCommentDataIsIncludedInResponse() {
-        boolean allCommentsHasData = commentThreadListResponse.getItems().stream()
-                .allMatch(commentThread -> commentThread.getId() != null
-                        && commentThread.getKind() != null
-                        && commentThread.getEtag() != null);
-        assertThat(allCommentsHasData).isTrue();
+    public void verifyRequiredCommentData() {
+        // Deserialize the response to the commentThread POJO class, in the pojo class there is a check of all fields not null
+        response = CommonSteps.getResponse();
+        commentThread = response.getBody().as(CommentThread.class);
+    }
+
+    @And("I have a request body with comment {string}")
+    public void setRequestBodyWithComment(String comment) {
+        String channelId = CommonSteps.getProps().getProperty("channelId");
+        String videoId = CommonSteps.getProps().getProperty("videoId");
+        CommentSnippet commentSnippet = new CommentSnippet(comment + ": " + getCurrentTime());
+        TopLevelComment topLevelComment = new TopLevelComment(commentSnippet);
+        Snippet snippet = new Snippet(channelId, videoId, topLevelComment);
+        CommentThreadRequest commentThreadRequest = new CommentThreadRequest(snippet);
+        restAssuredExtension.setBody(commentThreadRequest);
+    }
+
+    private String getCurrentTime() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return currentTime.format(formatter);
     }
 }

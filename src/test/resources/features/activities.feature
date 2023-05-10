@@ -8,8 +8,8 @@ Feature: Retrieve YouTube Activities
       | key       | ${key}       |
       | channelId | ${channelId} |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 200
-    And the response should contain a list of channel activity events
+    Then the response status code should be 200
+    And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
 
   @critical
@@ -20,8 +20,8 @@ Feature: Retrieve YouTube Activities
       | channelId | ${channelId} |
       | part      | snippet      |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 200
-    And the response should contain a list of channel activity events
+    Then the response status code should be 200
+    And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property snippet
     And the response should include only the specified resource property snippet
@@ -34,8 +34,8 @@ Feature: Retrieve YouTube Activities
       | channelId | ${channelId}   |
       | part      | contentDetails |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 200
-    And the response should contain a list of channel activity events
+    Then the response status code should be 200
+    And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property contentDetails
     And the response should include only the specified resource property contentDetails
@@ -49,8 +49,8 @@ Feature: Retrieve YouTube Activities
       | part      | contentDetails |
       | part      | snippet        |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 200
-    And the response should contain a list of channel activity events
+    Then the response status code should be 200
+    And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property contentDetails
     And the response should include the required property snippet
@@ -62,7 +62,7 @@ Feature: Retrieve YouTube Activities
       | key       | ${wrongKey}  |
       | channelId | ${channelId} |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 400
+    Then the response status code should be 400
     And the response should contain an error message that API key not valid
 
   @extended
@@ -71,7 +71,7 @@ Feature: Retrieve YouTube Activities
       | name | value  |
       | key  | ${key} |
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 400
+    Then the response status code should be 400
     And the response should contain an error message that No filter selected
 
   @extended
@@ -82,6 +82,6 @@ Feature: Retrieve YouTube Activities
       | mine | true           |
     And a valid OAuth 2.0 access token with "YOUTUBE_READONLY" scope
     When I send a GET request to the endpoint
-    Then the response status code from activity should be 200
-    And the response should contain a list of channel activity events
+    Then the response status code should be 200
+    And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)

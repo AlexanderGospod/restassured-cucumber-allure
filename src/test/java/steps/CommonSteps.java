@@ -12,24 +12,29 @@ import io.restassured.response.ResponseOptions;
 import utilities.AccessTokenProvider;
 import utilities.RestAssuredExtension;
 import utilities.TokenStorage;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonSteps {
     private final static ThreadLocal<RestAssuredExtension> restAssuredExtension = new ThreadLocal<>();
+
     public static RestAssuredExtension getRestAssuredExtension() {
         return restAssuredExtension.get();
     }
+
     private final static ThreadLocal<ResponseOptions<Response>> response = new ThreadLocal<>();
+
     public static ResponseOptions<Response> getResponse() {
         return response.get();
     }
+
     private static Properties props;
-    public static Properties getProps() { return props; }
+
+    public static Properties getProps() {
+        return props;
+    }
 
     public CommonSteps() {
         restAssuredExtension.set(new RestAssuredExtension());
@@ -72,9 +77,15 @@ public class CommonSteps {
     public void sendPOSTRequestToEndpoint() {
         response.set(restAssuredExtension.get().sendPostRequest());
     }
+
     @When("I send a PUT request to endpoint")
     public void sendPUTRequestToEndpoint() {
         response.set(restAssuredExtension.get().sendPutRequest());
+    }
+
+    @When("I send a DELETE request to endpoint")
+    public void sendDELETERequestToEndpoint() {
+        response.set(restAssuredExtension.get().sendDeleteRequest());
     }
 
     @After
@@ -84,11 +95,12 @@ public class CommonSteps {
         }
     }
 
-    @And("a valid OAuth 2.0 access token with {string} scope")
+    @And("a OAuth 2.0 access token with {string} scope")
     public void setTokenWithNecessaryAccessRights(String scope) {
         getTokenWithNecessaryAccessRights(scope);
         restAssuredExtension.get().addToken(TokenStorage.getToken(scope));
     }
+
     @Then("the response status code should be {int}")
     public void assertResponseStatus(int expectedStatusCode) {
         assertThat(response.get().getStatusCode())
@@ -97,9 +109,11 @@ public class CommonSteps {
     }
 
     public void getTokenWithNecessaryAccessRights(String scope) {
+        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7Ckk27CDZCtZXvgVmvpaUO200GkuK0UmY8zTKRwCrVdz53nHRoGP1Jv0H_sDUAsRKI340asjflOXlYEKGpBKZVvbqr8r78kEXrRqar8qM4TmvJsMOJBXPyDLm3UW5ljzJh-byh5cxbHcriMJT7xGIgFJKaCgYKATwSARISFQG1tDrphmwUu3e6xDse2moUEdtzzQ0163");
         if (TokenStorage.getToken(scope) == null) {
             AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
             String token = accessTokenProvider.getAccessToken(scope);
+            System.out.println(token);
             TokenStorage.setToken(scope, token);
         }
     }

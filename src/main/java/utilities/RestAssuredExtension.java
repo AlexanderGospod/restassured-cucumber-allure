@@ -15,7 +15,7 @@ import static io.restassured.RestAssured.given;
 
 public class RestAssuredExtension {
     private RequestSpecification request;
-    private final RequestSpecBuilder builder = new RequestSpecBuilder();
+    private RequestSpecBuilder builder;
 
     public Properties readPropertyData() {
         Properties props = new Properties();
@@ -33,6 +33,7 @@ public class RestAssuredExtension {
     }
 
     public void setEndpoint(String endpointName) {
+        builder = new RequestSpecBuilder();
         builder.setBaseUri(BASE_URI);
         builder.setContentType(ContentType.JSON);
         switch (endpointName) {
@@ -66,11 +67,14 @@ public class RestAssuredExtension {
         buildRequest();
         return request.put();
     }
+    public ResponseOptions<Response> sendDeleteRequest() {
+        buildRequest();
+        return request.delete();
+    }
 
     public void addQueryParam(String queryParam, String value) {
         builder.addQueryParam(queryParam, value);
     }
-
     public void addToken(String token) {
         builder.addHeader("Authorization", "Bearer " + token);
     }

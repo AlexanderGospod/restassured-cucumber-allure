@@ -117,7 +117,7 @@ public class CommentsSteps {
 
     @And("a comment id that I will delete")
     public void setCommentId() {
-        commentId = commentThreadList.getItems().get(0).getId();
+        commentId = commentThread.getId();
         restAssuredExtension.addQueryParam("id", commentId);
     }
 

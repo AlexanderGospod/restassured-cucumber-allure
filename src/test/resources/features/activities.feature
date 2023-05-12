@@ -9,6 +9,7 @@ Feature: Retrieve YouTube Activities
       | channelId | ${channelId} |
     When I send a GET request to the endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
     And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
 
@@ -21,6 +22,7 @@ Feature: Retrieve YouTube Activities
       | part      | snippet      |
     When I send a GET request to the endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
     And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property snippet
@@ -35,6 +37,7 @@ Feature: Retrieve YouTube Activities
       | part      | contentDetails |
     When I send a GET request to the endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
     And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property contentDetails
@@ -50,6 +53,7 @@ Feature: Retrieve YouTube Activities
       | part      | snippet        |
     When I send a GET request to the endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
     And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)
     And the response should include the required property contentDetails
@@ -63,6 +67,7 @@ Feature: Retrieve YouTube Activities
       | channelId | ${channelId} |
     When I send a GET request to the endpoint
     Then the response status code should be 400
+    And the response protocol version and content type, as expected
     And the response should contain an error message that API key not valid
 
   @extended
@@ -72,6 +77,7 @@ Feature: Retrieve YouTube Activities
       | key  | ${key} |
     When I send a GET request to the endpoint
     Then the response status code should be 400
+    And the response protocol version and content type, as expected
     And the response should contain an error message that No filter selected
 
   @extended
@@ -83,5 +89,6 @@ Feature: Retrieve YouTube Activities
     And a OAuth 2.0 access token with "YOUTUBE_READONLY" scope
     When I send a GET request to the endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
     And the response should include the basic data of channel activity events
     And the response should contain the default number of items (5)

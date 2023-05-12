@@ -90,8 +90,8 @@ public class CommonSteps {
 
     @After
     public void attachErrorMessage() {
-        if (getResponse() != null && getResponse().getStatusCode() >= 400) {
-            Allure.addAttachment("Error message", getResponse().getBody().asString());
+        if (response.get() != null && response.get().getStatusCode() >= 400) {
+            Allure.addAttachment("Error message", response.get().getBody().asString());
         }
     }
 
@@ -99,6 +99,10 @@ public class CommonSteps {
     public void setTokenWithNecessaryAccessRights(String scope) {
         getTokenWithNecessaryAccessRights(scope);
         restAssuredExtension.get().addToken(TokenStorage.getToken(scope));
+    }
+    @And("an invalid OAuth 2.0 access token")
+    public void setInvalidTokenWithNecessaryAccessRights() {
+        restAssuredExtension.get().addToken(getProps().getProperty("invalidToken"));
     }
 
     @Then("the response status code should be {int}")
@@ -108,8 +112,18 @@ public class CommonSteps {
                 .isEqualTo(expectedStatusCode);
     }
 
+    @And("the response protocol version and content type, as expected")
+    public void assertProtocolVersion() {
+        assertThat(response.get().getStatusLine())
+                .as("protocol version should be HTTP/1.1")
+                .contains("HTTP/1.1");
+        assertThat(response.get().getContentType())
+                .as("ContentType should be 'application/json; charset=UTF-8'")
+                .isEqualTo("application/json; charset=UTF-8");
+    }
+
     public void getTokenWithNecessaryAccessRights(String scope) {
-        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7CkkRZhxrwx1O_6AoTD3ouMYW8uQiJOJFr6bv4ZjSmBZlAVZoaVRFu86pyS9hLxBQyZpIGHfVx9Y2qeTSTV12pUaU9sou3gLk7aXhGCHGCBpS6Ojh1HnI_YHHO6Ky0fefd9liN3Xy771BvoLb7W_BdhoXaCgYKATQSARISFQG1tDrpF2myLwJflI0hbh15eAd1iw0163");
+        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7Ckl-vha9Y5fhFPwjRKIelMd2BFSF7OvL7oStUhotqwfGtDz5pjWiSKpyu8lJuLAxqHE0RtNMc-h5KvhaDBRkEKiLumrtEx-Mz072yjJFJc5cky_7x--cIg4Kd7Y_SLUT-H3xXhdqSST7Qcs0yqqA-1LKaCgYKARkSARISFQG1tDrpUF18VQ0bDtLuFVvY4gvx0A0163");
         if (TokenStorage.getToken(scope) == null) {
             AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
             String token = accessTokenProvider.getAccessToken(scope);

@@ -3,9 +3,11 @@ package steps;
 import io.cucumber.java.en.And;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
+import model.comment.comment.AnswerToCommentRequest;
 import model.comment.comment.CommentThreadRequest;
 import model.comment.comment.CommentThreadRequest.*;
 import model.comment.comment.CommentUpdateRequest;
+import pojo.comment.AnswerToComment;
 import pojo.comment.CommentThread;
 import pojo.comment.CommentThreadList;
 import pojo.comment.CommentUpdate;
@@ -24,6 +26,8 @@ public class CommentsSteps {
     private CommentThread commentThread;
     private String comment;
     private String commentForUpdate;
+    private String answerToComment;
+
     private String commentId;
 
     public CommentsSteps() {
@@ -79,6 +83,18 @@ public class CommentsSteps {
         commentUpdateRequest.setSnippet(snippet);
         restAssuredExtension.setBody(commentUpdateRequest);
     }
+    @And("I have a body for responding to an existing comment")
+    public void setAnswerToExistingComment() {
+        // Create a new CommentUpdateRequest object
+        AnswerToCommentRequest answerToCommentRequest = new AnswerToCommentRequest();
+        // Set the values for the properties
+        AnswerToCommentRequest.Snippet snippet = new AnswerToCommentRequest.Snippet();
+        answerToComment = "My answer on the comment, answered at " + getCurrentTime();
+        snippet.setTextOriginal(answerToComment);
+        snippet.setParentId(commentThreadList.getItems().get(1).getId());
+        answerToCommentRequest.setSnippet(snippet);
+        restAssuredExtension.setBody(answerToCommentRequest);
+    }
 
     @And("the modified comment is displayed")
     public void verifyModifiedCommentMessage() {
@@ -86,21 +102,27 @@ public class CommentsSteps {
         String displayedComment = response.getBody().as(CommentUpdate.class).getSnippet().getTextDisplay();
         assertThat(displayedComment).isEqualTo(commentForUpdate);
     }
+    @And("the answer to a comment is displayed")
+    public void verifyThatAnswerToCommentIsDisplayed() {
+        response = getResponse();
+        String displayedAnswer = response.getBody().as(AnswerToComment.class).getSnippet().getTextDisplay();
+        assertThat(displayedAnswer).isEqualTo(answerToComment);
+    }
 
     @And("the written comment is displayed")
-    public void theWrittenCommentIsDisplayed() {
+    public void checkThatCommentIsDisplayed() {
         String displayedComment = commentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
         assertThat(displayedComment).isEqualTo(comment);
     }
 
     @And("a comment id that I will delete")
-    public void iHaveACommentIdThatIWillDelete() {
+    public void setCommentId() {
         commentId = commentThreadList.getItems().get(0).getId();
         restAssuredExtension.addQueryParam("id", commentId);
     }
 
     @And("the comment is no longer displayed")
-    public void theCommentIsNoLongerDisplayed() {
+    public void checkThatCommentIsNoLongerDisplayed() {
         //return Error if server response takes more than a minute without deleted comment ID.
         await()
                 .atMost(60, SECONDS)

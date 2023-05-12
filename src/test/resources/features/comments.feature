@@ -13,7 +13,7 @@ Feature: Interaction with comments
     And the response should contain a list of comments
 
   @smoke
-  Scenario: Write a video comment
+  Scenario: Write a comment to the video
     Given the API endpoint "commentThreads" with the following query parameters:
       | name | value   |
       | part | snippet |
@@ -23,6 +23,26 @@ Feature: Interaction with comments
     Then the response status code should be 200
     And the response should include the required comment data
     And the written comment is displayed
+
+  @smoke
+  Scenario: Write a comment to the comment
+    #  arrange
+    Given the API endpoint "commentThreads" with the following query parameters:
+      | name    | value      |
+      | key     | ${key}     |
+      | videoId | ${videoId} |
+    When I send a GET request to the endpoint
+    And the response should include the required data about list of comments
+    And the response should contain a list of comments
+    #  act
+    Given the API endpoint "comments" with the following query parameters:
+      | name | value   |
+      | part | snippet |
+    And a OAuth 2.0 access token with "YOUTUBE_FORCE_SSL" scope
+    And I have a body for responding to an existing comment
+    When I send a POST request to endpoint
+    Then the response status code should be 200
+    And the answer to a comment is displayed
 
   @smoke
   Scenario: Update the video comment

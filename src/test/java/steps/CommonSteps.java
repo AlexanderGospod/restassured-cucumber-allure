@@ -109,7 +109,7 @@ public class CommonSteps {
     }
 
     public void getTokenWithNecessaryAccessRights(String scope) {
-        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7Ckk27CDZCtZXvgVmvpaUO200GkuK0UmY8zTKRwCrVdz53nHRoGP1Jv0H_sDUAsRKI340asjflOXlYEKGpBKZVvbqr8r78kEXrRqar8qM4TmvJsMOJBXPyDLm3UW5ljzJh-byh5cxbHcriMJT7xGIgFJKaCgYKATwSARISFQG1tDrphmwUu3e6xDse2moUEdtzzQ0163");
+        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7CkkRZhxrwx1O_6AoTD3ouMYW8uQiJOJFr6bv4ZjSmBZlAVZoaVRFu86pyS9hLxBQyZpIGHfVx9Y2qeTSTV12pUaU9sou3gLk7aXhGCHGCBpS6Ojh1HnI_YHHO6Ky0fefd9liN3Xy771BvoLb7W_BdhoXaCgYKATQSARISFQG1tDrpF2myLwJflI0hbh15eAd1iw0163");
         if (TokenStorage.getToken(scope) == null) {
             AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
             String token = accessTokenProvider.getAccessToken(scope);

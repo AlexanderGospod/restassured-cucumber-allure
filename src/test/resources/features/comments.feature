@@ -35,7 +35,6 @@ Feature: Interaction with comments
       | videoId | ${videoId} |
     When I send a GET request to the endpoint
     And the response should include the required data about list of comments
-    And the response should contain a list of comments
     #  act
     Given the API endpoint "comments" with the following query parameters:
       | name | value   |
@@ -45,6 +44,7 @@ Feature: Interaction with comments
     When I send a POST request to endpoint
     Then the response status code should be 200
     And the response protocol version and content type, as expected
+    And the response should include the required data about answer to comment
     And the answer to a comment is displayed
 
   @smoke
@@ -66,6 +66,7 @@ Feature: Interaction with comments
     When I send a PUT request to endpoint
     Then the response status code should be 200
     And the response protocol version and content type, as expected
+    And the response should include the required data about comment update
     And the modified comment is displayed
 
   @smoke
@@ -129,10 +130,14 @@ Feature: Interaction with comments
     When I send a PUT request to endpoint
     Then the response status code should be 200
     And the response protocol version and content type, as expected
+    And the response should include the required data about comment update
     And the modified comment is displayed
     # assert idempotence
     When I send a PUT request to endpoint
     Then the response status code should be 200
+    And the response protocol version and content type, as expected
+    And the response should include the required data about comment update
+    And the modified comment is displayed
 
   @extended
   Scenario: Get list of comments for the video with invalid API key
@@ -172,7 +177,6 @@ Feature: Interaction with comments
       | videoId | ${videoId} |
     When I send a GET request to the endpoint
     And the response should include the required data about list of comments
-    And the response should contain a list of comments
     #  act
     Given the API endpoint "comments" with the following query parameters:
       | name | value   |
@@ -191,7 +195,6 @@ Feature: Interaction with comments
       | videoId | ${videoId} |
     When I send a GET request to the endpoint
     And the response should include the required data about list of comments
-    And the response should contain a list of comments
     #  act
     Given the API endpoint "comments" with the following query parameters:
       | name | value   |

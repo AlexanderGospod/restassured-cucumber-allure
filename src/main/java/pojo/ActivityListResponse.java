@@ -2,7 +2,7 @@ package pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,6 @@ public class ActivityListResponse {
     @NotNull
     @JsonProperty("items")
     private List<Activity> items;
-    @NotNull
     @JsonProperty("nextPageToken")
     private String nextPageToken;
     @NotNull
@@ -42,12 +41,8 @@ public class ActivityListResponse {
         @NotNull
         @JsonProperty("id")
         private String id;
-        @NotNull
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonProperty("snippet")
         private Snippet snippet;
-        @NotNull
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonProperty("contentDetails")
         private ContentDetails contentDetails;
     }
@@ -96,19 +91,14 @@ public class ActivityListResponse {
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ActivityThumbnail {
-        @NotNull
         @JsonProperty("defaultImage")
         private ActivityThumbnailImage defaultImage;
-        @NotNull
         @JsonProperty("mediumImage")
         private ActivityThumbnailImage mediumImage;
-        @NotNull
         @JsonProperty("highImage")
         private ActivityThumbnailImage highImage;
-        @NotNull
         @JsonProperty("standardImage")
         private ActivityThumbnailImage standardImage;
-        @NotNull
         @JsonProperty("maxresImage")
         private ActivityThumbnailImage maxresImage;
     }
@@ -120,7 +110,6 @@ public class ActivityListResponse {
         @NotNull
         @JsonProperty("upload")
         private Upload upload;
-        @NotNull
         @JsonProperty("playlistItem")
         private PlaylistItem playlistItem;
 
@@ -131,7 +120,6 @@ public class ActivityListResponse {
             @NotNull
             @JsonProperty("videoId")
             private String videoId;
-
         }
 
         @Data

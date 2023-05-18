@@ -50,6 +50,18 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.version}</version>
         </dependency>
+        <!--   @NotNull check after deserialization-->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>5.0.0-M1</version>
+            <scope>test</scope>
+        </dependency>
         <!--    Allure report-->
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -88,7 +100,6 @@
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

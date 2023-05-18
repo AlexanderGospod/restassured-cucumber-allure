@@ -1,4 +1,4 @@
-package utilities;
+package utilities.token;
 
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -11,6 +11,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTubeScopes;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
@@ -19,6 +20,22 @@ import java.util.Collections;
 
 
 public class AccessTokenProvider {
+    public void getTokenWithNecessaryAccessRights(String scope) {
+        //Get token with necessary access rights and save it to the storage
+//        TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7CkmDySpGHZUibFaBM_u_anM9-LCzBdLm0-BqU7ASiAuj84cjdER0OsZ8iqU8hmdTrxUgna-okUC9myDfhGID1-Nq4AhbPYfvN--pwJLp1pEICVwC19grucsumF4GAo3RE-Own3kxHCaxfpKkBZof6kRFaCgYKAdMSARISFQG1tDrp6tC-artCWWNbVnl-OHoeFA0163");
+//        TokenStorage.setToken("YOUTUBE_READONLY", "ya29.a0AWY7CkluFbfQ0ZEAFOm4tsjjN33MEINEDg9SweFsp3dcjzvyiS_wQrc8sum7mGe9h8VzN4ZXz1aAZf7D5vdie-MKHLMHRz5UNPUx0FHHykjhxzGm3mNQSElzG1pnsvhEh3l75OxiB9n8u_czdrubtq0eguU5aCgYKARQSARISFQG1tDrp_5ngjvPklDo_HNgc5agopA0163");
+
+        if (TokenStorage.getToken(scope) == null) {
+            String token;
+            try {
+                token = authorize(scope).getAccessToken();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+//            System.out.println(scope + " - " + token);
+            TokenStorage.setToken(scope, token);
+        }
+    }
 
     private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
@@ -37,16 +54,6 @@ public class AccessTokenProvider {
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-    }
-
-    public String getAccessToken(String scope) {
-        try {
-            return authorize(scope).getAccessToken();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Iterable<String> getScope(String scope) {

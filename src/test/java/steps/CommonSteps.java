@@ -9,9 +9,9 @@ import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
-import utilities.AccessTokenProvider;
+import utilities.token.AccessTokenProvider;
 import utilities.RestAssuredExtension;
-import utilities.TokenStorage;
+import utilities.token.TokenStorage;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -51,7 +51,7 @@ public class CommonSteps {
                 case "${channelId}":
                 case "${wrongKey}":
                 case "${videoId}":
-                    String value = props.getProperty(row.get("value").replaceAll("\\$\\{(.+?)\\}", "$1")); //replace ${}
+                    String value = props.getProperty(row.get("value").replaceAll("\\$\\{(.+?)}", "$1")); //replace ${}
                     restAssuredExtension.get().addQueryParam(row.get("name"), value);
                     break;
                 default:
@@ -97,7 +97,9 @@ public class CommonSteps {
 
     @And("a OAuth 2.0 access token with {string} scope")
     public void setTokenWithNecessaryAccessRights(String scope) {
-        getTokenWithNecessaryAccessRights(scope);
+        AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
+        accessTokenProvider.getTokenWithNecessaryAccessRights(scope);
+        //Set token with necessary access rights
         restAssuredExtension.get().addToken(TokenStorage.getToken(scope));
     }
     @And("an invalid OAuth 2.0 access token")
@@ -113,22 +115,13 @@ public class CommonSteps {
     }
 
     @And("the response protocol version and content type, as expected")
-    public void assertProtocolVersion() {
+    public void assertProtocolVersionAndContentType() {
         assertThat(response.get().getStatusLine())
                 .as("protocol version should be HTTP/1.1")
                 .contains("HTTP/1.1");
         assertThat(response.get().getContentType())
                 .as("ContentType should be 'application/json; charset=UTF-8'")
                 .isEqualTo("application/json; charset=UTF-8");
-    }
 
-    public void getTokenWithNecessaryAccessRights(String scope) {
-        //TokenStorage.setToken("YOUTUBE_FORCE_SSL", "ya29.a0AWY7Ckl-vha9Y5fhFPwjRKIelMd2BFSF7OvL7oStUhotqwfGtDz5pjWiSKpyu8lJuLAxqHE0RtNMc-h5KvhaDBRkEKiLumrtEx-Mz072yjJFJc5cky_7x--cIg4Kd7Y_SLUT-H3xXhdqSST7Qcs0yqqA-1LKaCgYKARkSARISFQG1tDrpUF18VQ0bDtLuFVvY4gvx0A0163");
-        if (TokenStorage.getToken(scope) == null) {
-            AccessTokenProvider accessTokenProvider = new AccessTokenProvider();
-            String token = accessTokenProvider.getAccessToken(scope);
-            System.out.println(token);
-            TokenStorage.setToken(scope, token);
-        }
     }
 }

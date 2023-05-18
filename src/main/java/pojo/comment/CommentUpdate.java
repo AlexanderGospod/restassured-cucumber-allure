@@ -1,7 +1,7 @@
 package pojo.comment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

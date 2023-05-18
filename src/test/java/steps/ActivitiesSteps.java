@@ -4,8 +4,10 @@ import io.cucumber.java.en.And;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
 import pojo.ActivityListResponse;
+import utilities.ParameterValidation;
 
 import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -74,7 +76,6 @@ public class ActivitiesSteps {
 
     private void assertErrorMessage(String expectedErrorMessage) {
         String errorMessage = response.getBody().jsonPath().getString("error.message");
-        System.out.println(errorMessage);
         assertThat(errorMessage)
                 .as("Response Error message does not match expected, should be " + expectedErrorMessage)
                 .contains(expectedErrorMessage);
@@ -82,7 +83,9 @@ public class ActivitiesSteps {
 
     @And("the response should include the basic data of channel activity events")
     public void verifyBasicChannelActivityEventData() {
-        // Deserialize the response to the ActivityListResponse POJO class, in the pojo class there is a check of all fields not null
         activityListResponse = response.getBody().as(ActivityListResponse.class);
+        ParameterValidation parameterValidation = new ParameterValidation();
+        parameterValidation.checkThatAllParametersAnnotatedNotNullAreNotEqualNull(activityListResponse);
     }
+
 }

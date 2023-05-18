@@ -3,14 +3,15 @@ package steps;
 import io.cucumber.java.en.And;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
-import model.comment.comment.AnswerToCommentRequest;
-import model.comment.comment.CommentThreadRequest;
-import model.comment.comment.CommentThreadRequest.*;
-import model.comment.comment.CommentUpdateRequest;
+import model.comment.AnswerToCommentRequest;
+import model.comment.CommentThreadRequest;
+import model.comment.CommentThreadRequest.*;
+import model.comment.CommentUpdateRequest;
 import pojo.comment.AnswerToComment;
 import pojo.comment.CommentThread;
 import pojo.comment.CommentThreadList;
 import pojo.comment.CommentUpdate;
+import utilities.ParameterValidation;
 import utilities.RestAssuredExtension;
 import static org.awaitility.Awaitility.await;
 import java.time.LocalDateTime;
@@ -26,8 +27,7 @@ public class CommentsSteps {
     private CommentThread commentThread;
     private String comment;
     private String commentForUpdate;
-    private String answerToComment;
-
+    private String answerToCommentMessage;
     private String commentId;
 
     public CommentsSteps() {
@@ -40,17 +40,33 @@ public class CommentsSteps {
     }
 
     @And("the response should include the required data about list of comments")
-    public void deserializeResponseToCommentThreadList() {
+    public void verifyRequiredCommentThreadListData() {
         response = getResponse();
-        // Deserialize the response to the commentThreadList POJO class, in the pojo class there is a check of all fields not null
         commentThreadList = response.getBody().as(CommentThreadList.class);
+        ParameterValidation parameterValidation = new ParameterValidation();
+        parameterValidation.checkThatAllParametersAnnotatedNotNullAreNotEqualNull(commentThreadList);
+    }
+    @And("the response should include the required data about answer to comment")
+    public void verifyRequiredAnswerToCommentData() {
+        response = getResponse();
+        AnswerToComment answerToComment = response.getBody().as(AnswerToComment.class);
+        ParameterValidation parameterValidation = new ParameterValidation();
+        parameterValidation.checkThatAllParametersAnnotatedNotNullAreNotEqualNull(answerToComment);
     }
 
     @And("the response should include the required comment data")
     public void verifyRequiredCommentData() {
-        // Deserialize the response to the commentThread POJO class, in the pojo class there is a check of all fields not null
         response = getResponse();
         commentThread = response.getBody().as(CommentThread.class);
+        ParameterValidation parameterValidation = new ParameterValidation();
+        parameterValidation.checkThatAllParametersAnnotatedNotNullAreNotEqualNull(commentThread);
+    }
+    @And("the response should include the required data about comment update")
+    public void verifyRequiredCommentUpdateData () {
+        response = getResponse();
+        CommentUpdate commentUpdate = response.getBody().as(CommentUpdate.class);
+        ParameterValidation parameterValidation = new ParameterValidation();
+        parameterValidation.checkThatAllParametersAnnotatedNotNullAreNotEqualNull(commentUpdate);
     }
 
     @And("I have a request body with channelId, videoId and comment {string}")
@@ -89,8 +105,8 @@ public class CommentsSteps {
         AnswerToCommentRequest answerToCommentRequest = new AnswerToCommentRequest();
         // Set the values for the properties
         AnswerToCommentRequest.Snippet snippet = new AnswerToCommentRequest.Snippet();
-        answerToComment = "My answer on the comment, answered at " + getCurrentTime();
-        snippet.setTextOriginal(answerToComment);
+        answerToCommentMessage = "My answer on the comment, answered at " + getCurrentTime();
+        snippet.setTextOriginal(answerToCommentMessage);
         snippet.setParentId(commentThreadList.getItems().get(1).getId());
         answerToCommentRequest.setSnippet(snippet);
         restAssuredExtension.setBody(answerToCommentRequest);
@@ -106,7 +122,7 @@ public class CommentsSteps {
     public void verifyThatAnswerToCommentIsDisplayed() {
         response = getResponse();
         String displayedAnswer = response.getBody().as(AnswerToComment.class).getSnippet().getTextDisplay();
-        assertThat(displayedAnswer).isEqualTo(answerToComment);
+        assertThat(displayedAnswer).isEqualTo(answerToCommentMessage);
     }
 
     @And("the written comment is displayed")

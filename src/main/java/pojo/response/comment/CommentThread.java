@@ -1,4 +1,4 @@
-package pojo.comment;
+package pojo.response.comment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;

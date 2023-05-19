@@ -1,59 +1,90 @@
-package pojo.comment;
+package pojo.response.comment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class CommentUpdate {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AnswerToComment {
     @NotNull
+    @JsonProperty("kind")
     private String kind;
+
     @NotNull
+    @JsonProperty("etag")
     private String etag;
+
     @NotNull
+    @JsonProperty("id")
     private String id;
+
     @NotNull
+    @JsonProperty("snippet")
     private Snippet snippet;
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Snippet {
+        @NotNull
         @JsonProperty("textDisplay")
-        @NotNull
         private String textDisplay;
+
+        @NotNull
         @JsonProperty("textOriginal")
-        @NotNull
         private String textOriginal;
+
+        @NotNull
+        @JsonProperty("parentId")
+        private String parentId;
+
+        @NotNull
         @JsonProperty("authorDisplayName")
-        @NotNull
         private String authorDisplayName;
+
+        @NotNull
         @JsonProperty("authorProfileImageUrl")
-        @NotNull
         private String authorProfileImageUrl;
+
+        @NotNull
         @JsonProperty("authorChannelUrl")
-        @NotNull
         private String authorChannelUrl;
-        @JsonProperty("authorChannelId")
+
         @NotNull
+        @JsonProperty("authorChannelId")
         private AuthorChannelId authorChannelId;
+
+        @NotNull
         @JsonProperty("canRate")
         private boolean canRate;
+
+        @NotNull
         @JsonProperty("viewerRating")
         private String viewerRating;
+
+        @NotNull
         @JsonProperty("likeCount")
         private int likeCount;
+
+        @NotNull
         @JsonProperty("publishedAt")
-        @NotNull
         private String publishedAt;
-        @JsonProperty("updatedAt")
+
         @NotNull
+        @JsonProperty("updatedAt")
         private String updatedAt;
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AuthorChannelId {
         @NotNull
+        @JsonProperty("value")
         private String value;
     }
-
-
 }

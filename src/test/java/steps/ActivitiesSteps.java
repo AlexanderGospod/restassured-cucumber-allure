@@ -3,7 +3,7 @@ package steps;
 import io.cucumber.java.en.And;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseOptions;
-import pojo.ActivityListResponse;
+import pojo.response.activity.ActivityListResponse;
 import utilities.ParameterValidation;
 
 import java.util.*;

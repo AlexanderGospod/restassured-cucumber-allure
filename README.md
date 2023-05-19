@@ -13,7 +13,7 @@
 - Building an allure report
 - Property files with settings for accessing the youtube api
 
-## YouTube api testing project, api documentation can be found here
+## Api documentation can be found here
 ```
 https://developers.google.com/youtube/v3/docs/
 ```
